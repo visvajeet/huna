@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<!--
+  Cyber Mega Phone 2K
+  Copyright (C) 2017 Digium, Inc.
+
+  This program is free software, distributed under the terms of the
+  MIT License. See the LICENSE file at the top of the source tree.
+-->
+
+<html lang="en">
+
+<head>
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <meta charset="utf-8" />
+
+  <title>Cyber Mega Phone 2K</title>
+  <script src="js_sip.js"></script>
+  <script src="cyber_mega_phone.js"></script>
+  <script src="sdp_interpritor.js"></script>
+  <script src="utils.js"></script>
+  <link rel="stylesheet" type="text/css" href="cyber_mega_phone.css">
+
+  <script type="text/javascript">
+
+
+    window.onload = function () {
+
+      document.getElementById("connect").value = "Connect";
+      document.getElementById("connect").disabled = false;
+      document.getElementById("call").value = "Call";
+      document.getElementById("call").disabled = true;
+
+
+      document.getElementById("connect").addEventListener("click", function () {
+       startConnect();
+       });
+
+      document.getElementById("call").addEventListener("click", function () {
+        connectOrDisConnectCall();
+      });
+
+    }
+
+
+    let phone;
+    let myVideo;
+    let streamCount = 0;
+
+
+
+    function addMediaView(stream){
+
+      streamCount = streamCount + 1;
+
+
+      let mediaView = document.createElement("div");
+        mediaView.id = stream.id;
+        let contentClass = document.createElement("div");
+        contentClass.className = "content";
+
+      let video = document.createElement("video")
+      video.autoplay = true;
+      video.className = "video";
+      video.srcObject = stream;
+
+
+       if(streamCount < 3){
+          mediaView.className = "square-first";
+       }else{
+          mediaView.className = "square";
+       }
+
+
+      contentClass.appendChild(video);
+
+      mediaView.appendChild(contentClass);
+
+
+      video.onloadedmetadata = function () {
+
+        let tracks = stream.getVideoTracks();
+
+        for (let i = 0; i < tracks.length; ++i) {
+
+          tracks[i].enabled = true;
+
+          if(streamCount > 1){
+           document.getElementById("media-views").appendChild(mediaView);
+           }
+
+
+        }
+      };
+
+
+      if(document.getElementById("media-views").childNodes.length > 2){
+
+            let nodes = document.getElementById("media-views").childNodes;
+
+            for (let i = 0; i < nodes.length; ++i) {
+                if (nodes[i].className == "square-first") {
+                    nodes[i].className = "square";
+                }
+             }
+       }
+
+
+      if (stream.local == true) {
+        myVideo = video;
+        video.muted = true;
+      }
+
+    }
+
+    //Find and remove media view
+    function findMediaView(parent, stream) {
+     let nodes = parent.childNodes;
+
+    for (let i = 0; i < nodes.length; ++i) {
+      if (nodes[i].id == stream.id) {
+        return nodes[i];
+      }
+    }
+       return null;
+   }
+
+    //Remove media  view
+    function removeMediaView(parent, stream) {
+       streamCount = streamCount - 1;
+      let node = findMediaView(parent, stream);
+      if (node) {
+        parent.removeChild(node);
+      }
+    }
+
+    function getValue(id) {
+      let obj = document.getElementById(id);
+      return obj.value ? obj.value : obj.placeholder;
+    }
+
+    function startConnect() {
+
+      if (document.getElementById("connect").value == "Disconnect") {
+        document.getElementById("call").value = "Call";
+        document.getElementById("call").disabled = true;
+        document.getElementById("connect").value = "Disconnecting";
+        document.getElementById("connect").disabled = true;
+
+        phone.disconnect();
+        return;
+      }
+
+      phone = new CyberMegaPhone("1000",
+        "1000",
+        "1000",
+        "divr.humonics.ai", true);
+
+      phone.handle("connected", function () {
+
+        if (document.getElementById("connect").value != "Disconnect") {
+          document.getElementById("connect").value = "Registering";
+        } else {
+          document.getElementById("connect").value = "Disconnect";
+          document.getElementById("connect").disabled = false;
+          document.getElementById("call").disabled = false;
+        }
+
+        console.log("connected success");
+        sendDataToDart("connected");
+
+
+      });
+
+      phone.handle("disconnected", function () {
+        document.getElementById("connect").value = "Connect";
+        document.getElementById("connect").disabled = false;
+        document.getElementById("call").value = "Call";
+        document.getElementById("call").disabled = true;
+      });
+
+      phone.handle("registered", function () {
+        document.getElementById("connect").value = "Disconnect";
+        document.getElementById("connect").disabled = false;
+        document.getElementById("call").disabled = false;
+      });
+
+      phone.handle("registrationFailed", function () {
+        phone.disconnect();
+      });
+
+      phone.handle("incoming", function (reason) {
+        document.getElementById("call").value = "Answer";
+      });
+
+      phone.handle("failed", function (reason) {
+        document.getElementById("call").value = "Call";
+        document.getElementById("call").disabled = false;
+      });
+
+      phone.handle("ended", function (reason) {
+        document.getElementById("call").value = "Call";
+        document.getElementById("call").disabled = document.getElementById("connect").value == "Connect";
+      });
+
+      phone.handle("streamAdded", function (stream) {
+         addMediaView(stream);
+
+        document.getElementById("call").value = "Hangup";
+        document.getElementById("call").disabled = false;
+
+        console.log(" New streamAdded");
+        sendDataToDart("streamAdded");
+
+      });
+
+      phone.handle("streamRemoved", function (stream) {
+        removeMediaView(document.getElementById("media-views"), stream);
+        sendDataToDart("streamRemoved");
+      });
+
+      phone.connect();
+
+      document.getElementById("connect").disabled = true;
+      document.getElementById("connect").value = "Connecting";
+
+    }
+
+    function connectOrDisConnectCall() {
+
+      let node = document.getElementById("call");
+
+      if (node.value == "Call") {
+        phone.call("666");
+        node.disabled = true;
+        node.value = "Ringing";
+      } else if (node.value == "Answer") {
+        node.disabled = true;
+        node.value = "Hangup";
+      } else {
+        node.value = "Call";
+        phone.terminate();
+      }
+    };
+
+
+function muteUnMuteMyStream(muteAudio,muteVideo) {
+
+ if(myVideo != null) {
+ // this is cyberMegaphone.js Method
+ mute(myVideo.srcObject, { audio: muteAudio, video : muteVideo});
+ }
+}
+
+    window.onunload = function () {
+      if (phone) {
+        phone.disconnect();
+      }
+    }; // window.onunload
+
+    function sendDataToDart(identifire) {
+
+try {
+
+  if (window.flutter_inappwebview.callHandler) {
+
+    // window.flutter_inappwebview.callHandler('allEventHandler', identifire);
+
+     var msg = { identifire: identifire }
+     window.flutter_inappwebview._callHandler('allEventHandler', setTimeout(function () { }), JSON.stringify([msg]));
+
+  } else {
+
+    var msg = { identifire: identifire }
+    window.flutter_inappwebview._callHandler('allEventHandler', setTimeout(function () { }), JSON.stringify([msg]));
+
+  }
+}
+catch (err) { }
+
+};
+
+  </script>
+
+
+</head>
+
+<body>
+
+<div class="connection" >
+  <input type="button" id="connect" class="connect" value="Call" hidden />
+  <input type="button" id="call" class="call" value="Connect"  hidden/>
+</div>
+
+<div id = "media-views"  class="square-container"></div>
+
+</body>
+
+</html>
