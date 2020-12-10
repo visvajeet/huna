@@ -155,7 +155,7 @@ class _Calendar extends State<Calendar> {
                                   Row(
                                     children: [
                                       Icon(
-                                        Icons.watch_later_outlined,
+                                        Icons.watch_later,
                                         size: 16,
                                         color: Colors.black87,
                                       ),

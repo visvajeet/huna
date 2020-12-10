@@ -65,7 +65,7 @@ dependencies:
   sticky_grouped_list: ^1.2.0
   flutter_datetime_picker: ^1.4.0
   flutter_colorpicker: ^0.3.4
-  basic_utils: ^2.6.3
+  basic_utils:
   numberpicker: ^1.2.1
   file_picker: ^2.0.13
   select_dialog: 1.2.1
