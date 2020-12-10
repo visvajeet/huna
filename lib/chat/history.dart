@@ -188,10 +188,20 @@ class _ChatHistoryPage extends State<ChatHistoryPage> {
               print(mapChatHistory);
 
               if (mapChatHistory['data'].isNotEmpty) {
+                var list = mapChatHistory['data'] as List<dynamic>;
+                var chatList = List<ChatHistoryModel>();
+                list.forEach((element) {
+                  var msgArray = element['msgArray'] as List<dynamic>;
+                  print("MSG");
+                  print(msgArray.last.Message);
+
+                //  chatList.add( ChatHistoryModel( "" ,  msgArray[0].toString(),  "", 1, "D", 0));
+
+                });
+                updateChatHistoryList(chatList);
 
               }else{
-                var chat = ChatHistoryModel("Dummy","Hello",getDateWithTime(), 1, "D", 0);
-                updateChatHistoryList([chat]);
+
                 Show.showToast("No chat history found", false);
               }
             }

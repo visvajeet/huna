@@ -3,21 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/navigator.dart';
-import 'package:huna/auth/login.dart';
-import 'package:huna/call/calls_model.dart';
+import 'package:http/http.dart' as http;
 import 'package:huna/chat/chat_history_model.dart';
 import 'package:huna/chat/chat_room_model.dart';
 import 'package:huna/chat/main_chat.dart';
-import 'package:huna/contacts/contacts_model.dart';
-import 'package:huna/database/database_helper.dart';
 import 'package:huna/libraries/sip_ua/sip_ua_helper.dart';
-import 'package:huna/libraries/sip_ua/utils.dart';
 import 'package:huna/manager/preference.dart';
 import 'package:huna/utils/show.dart';
-import 'package:huna/utils/utils.dart';
-import 'package:path/path.dart';
-import 'package:random_color/random_color.dart';
-import 'package:http/http.dart' as http;
+
 import '../constant.dart';
 
 class ChatManger {
@@ -46,7 +39,7 @@ class ChatManger {
           Show.hideLoading();
 
           var list = map['data'] as List<dynamic>;
-          var currentUser = list.firstWhere((element) => element["User1"] == email, orElse: () => null);
+          var currentUser = list.firstWhere((element) => element["User2"] == email, orElse: () => null);
 
           print(currentUser);
 
@@ -54,8 +47,8 @@ class ChatManger {
 
             var forChat = {
               "RoomId":  currentUser["RoomId"],
-              "User1":   currentUser["User1"],
-              "User2":   currentUser["User2"],
+              "User1":   currentUser["User2"],
+              "User2":   currentUser["User1"],
             };
 
             var chatRoom = ChatRoom(forChat["RoomId"],forChat["User1"],forChat["User2"]);

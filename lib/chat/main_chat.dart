@@ -4,30 +4,24 @@ import 'package:adhara_socket_io/manager.dart';
 import 'package:adhara_socket_io/options.dart';
 import 'package:adhara_socket_io/socket.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:dash_chat/dash_chat.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:huna/chat/chat_history_model.dart';
+import 'package:http/http.dart' as http;
 import 'package:huna/chat/receivedmessagewidget.dart';
 import 'package:huna/chat/sentmessagewidget.dart';
 import 'package:huna/constant.dart';
-import 'package:huna/database/database_helper.dart';
 import 'package:huna/libraries/sip_ua/sip_ua_helper.dart';
 import 'package:huna/manager/preference.dart';
-import 'package:huna/manager/call_manager.dart';
 import 'package:huna/manager/sound_player.dart';
 import 'package:huna/utils/show.dart';
 import 'package:huna/utils/utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:random_color/random_color.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'chat_model.dart';
 import 'chat_room_model.dart';
 import 'global.dart';
-import 'mycircleavatar.dart';
-import 'package:http/http.dart' as http;
 
 
 class ChatScreen extends StatefulWidget {
@@ -98,8 +92,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 radius: 15,
                 backgroundColor: colorAccent,
                 child: AutoSizeText(
-                    getFirstLetter(widget.chatRoom.user1),
-                    overflow: TextOverflow.ellipsis,
+                    getFirstLetter(widget.chatRoom.user2),
+                    overflow: TextOverflow.fade,
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
@@ -112,8 +106,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Text(
                     widget.chatRoom.user1,
-                    style: Theme.of(context).textTheme.subhead,
-                    overflow: TextOverflow.clip,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black54),
                   ),
 //                Text(
 //                  "Online",
@@ -366,7 +363,7 @@ class _ChatScreenState extends State<ChatScreen> {
               createdOn:  element["CreatedOn"],
               seenStatus: element["seenStatus"],
               deletedStatus: element["deletedStatus"],
-              message: element["message"],
+              message: element["Message"],
             ));
           });
 
@@ -425,12 +422,12 @@ class _ChatScreenState extends State<ChatScreen> {
      print("CHAT OBJECT");
      print(body);
 
-     final fetchChat = await http.post(SAVE_CHAT,
+     final saveChat = await http.post(SAVE_CHAT,
          headers: {"Content-Type": "application/json"}, body: body).timeout(Duration(seconds: 60), onTimeout: () {return null;});
 
-     if (fetchChat.statusCode == 200) {
+     if (saveChat.statusCode == 200) {
 
-       Map<String, dynamic> map = jsonDecode(fetchChat.body);
+       Map<String, dynamic> map = jsonDecode(saveChat.body);
 
        if (map['response'] == "ERROR") {
          Show.showToast('${map['message']}', false);

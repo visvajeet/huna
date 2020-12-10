@@ -324,12 +324,14 @@ class _ContactsPage extends State<ContactsPage> {
    addContact(ContactsModel contact) async {
 
      var userMail = await   PreferencesManager().getEmail();
+     var loginUserCallerId = await PreferencesManager().getName();
 
     Show.showLoading(context);
 
     var body = {
       "user" : userMail,
       'emailId': contact.email,
+      "loginUserCallerId" : loginUserCallerId
 
     };
 
