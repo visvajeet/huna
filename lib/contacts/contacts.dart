@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,9 @@ import 'package:huna/libraries/sip_ua/sip_ua_helper.dart';
 import 'package:huna/manager/call_manager.dart';
 import 'package:huna/manager/chat_manager.dart';
 import 'package:huna/manager/preference.dart';
+import 'package:huna/utils/show.dart';
 import 'package:huna/utils/utils.dart';
+import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -249,6 +253,13 @@ class _ContactsPage extends State<ContactsPage> {
                       onPressed: () {
                         navigateToContactInfoPage(contactsList[position]);
                       },
+                    ),
+                    IconButton(
+                      iconSize: 25,
+                      icon: Icon(Icons.add, color: Colors.green),
+                      onPressed: () {
+                        addContact(contactsList[position]);
+                      },
                     )
                   ],
                 ),
@@ -308,5 +319,42 @@ class _ContactsPage extends State<ContactsPage> {
         });
       });
     });
+  }
+
+   addContact(ContactsModel contact) async {
+
+     var userMail = await   PreferencesManager().getEmail();
+
+    Show.showLoading(context);
+
+    var body = {
+      "user" : userMail,
+      'emailId': contact.email,
+
+    };
+
+    print("ADD CONTACT");
+    print(body);
+
+    final apiAddContact = await http.post(ADD_CONTACT, body: body).timeout(Duration(seconds: 60), onTimeout: () {return null;});
+
+    if (apiAddContact.statusCode == 200) {
+
+      Map<String, dynamic> map = jsonDecode(apiAddContact.body);
+
+      if(map['response'] == "ERROR"){Show.showToast('${map['message']}', false); Show.hideLoading(); return;}
+
+      if(map['response'] == "SUCCESS") {
+
+        Show.hideLoading();
+        Show.showToast('contact_saved'.tr(),false);
+
+      }
+
+    }else{
+      Show.hideLoading();
+      Show.showToast('Something went wrong, Please try again later', false);
+    }
+
   }
 }

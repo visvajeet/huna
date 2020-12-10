@@ -130,8 +130,8 @@ class _AddContactPage extends State<AddContactPage> {
     var loginUserCallerId = await PreferencesManager().getName();
 
     var body = {
-      "user" : "kumarankit.r8@gmail.com",
-      'emailId': "rawatsandeep249@gmail.com",
+      "user" : userMail,
+      'emailId': _email.text.trim().toString(),
 
     };
 
@@ -156,16 +156,27 @@ class _AddContactPage extends State<AddContactPage> {
         Show.hideLoading();
         Show.showToast('contact_saved'.tr(),false);
 
-       /* var bodyEditContact = {
+      }
+
+      }else{
+      Show.hideLoading();
+      Show.showToast('Something went wrong, Please try again later', false);
+    }
+
+
+    
+  }
+
+/* var bodyEditContact = {
           "user" : userMail,
           'emailId': _email.text.trim(),
           "userPhone" : _number.text.trim(),
           "fullName" : _name.text.trim()
         };*/
 
-       // final apiEditContact = await http.post(EDIT_CONTACT, body: bodyEditContact).timeout(Duration(seconds: 60), onTimeout: () {return null;});
+// final apiEditContact = await http.post(EDIT_CONTACT, body: bodyEditContact).timeout(Duration(seconds: 60), onTimeout: () {return null;});
 
-        /*if (apiEditContact.statusCode == 200) {
+/*if (apiEditContact.statusCode == 200) {
 
           Map<String, dynamic> map = jsonDecode(apiEditContact.body);
 
@@ -181,19 +192,6 @@ class _AddContactPage extends State<AddContactPage> {
           Show.hideLoading();
           Show.showToast('Something went wrong, Please try again later', false);
         }*/
-
-
-      }
-
-      }else{
-      Show.hideLoading();
-      Show.showToast('Something went wrong, Please try again later', false);
-    }
-
-
-    
-  }
-
 
  
 
