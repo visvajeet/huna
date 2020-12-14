@@ -47,17 +47,15 @@ class ChatManger {
 
             var forChat = {
               "RoomId":  currentUser["RoomId"],
-              "User1":   currentUser["User2"],
-              "User2":   currentUser["User1"],
+              "User1":   currentUser["User1"],
+              "User2":   currentUser["User2"],
             };
 
             var chatRoom = ChatRoom(forChat["RoomId"],forChat["User1"],forChat["User2"]);
 
-            var asteriskName = await Future.value(PreferencesManager().getName());
+            //var asteriskName = await Future.value(PreferencesManager().getName());
 
-            var chat = ChatHistoryModel(asteriskName,"","",int.parse(number),name,0);
-
-
+            //var chat = ChatHistoryModel(asteriskName,"","",int.parse(number),name,0);
 
             Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(helper,chatRoom)));
 

@@ -12,6 +12,7 @@ import 'package:huna/chat/chat_model.dart';
 import 'package:huna/constant.dart';
 import 'package:huna/contacts/contacts_model.dart';
 import 'package:huna/home.dart';
+import 'package:huna/libraries/sip_ua/logger.dart';
 import 'package:huna/manager/preference.dart';
 import 'package:huna/manager/call_manager.dart';
 import 'package:huna/utils/show.dart';
@@ -131,12 +132,12 @@ class _SplashPage extends State<SplashPage> implements SipUaHelperListener {
       return;
     }
 */
-    var body = {'domain': '$domain', 'role': '$role'};
+   // var body = {'domain': '$domain', 'role': '$role'};
 
     var token = await PreferencesManager().getToken();
 
     final response = await http
-        .post(FETCH_ORG_USER, headers: {"Authorization": token}, body: body)
+        .get(FETCH_ORG_USER, headers: {"Authorization": token})
         .timeout(Duration(seconds: 60), onTimeout: () {
       hideLoading();
       return null;
@@ -175,7 +176,7 @@ class _SplashPage extends State<SplashPage> implements SipUaHelperListener {
                                 name,
                                 element['UserID'],
                                 element['FullName'],
-                                element['UserPhone'],
+                                'empty',
                                 _color,
                                 element['UserEmail'],
                                 1,
@@ -347,6 +348,16 @@ class _SplashPage extends State<SplashPage> implements SipUaHelperListener {
   void transportStateChanged(TransportState state) {}
 
   void registerSip(String userName, domain, password, displayName, wss) {
+
+    print("SIP");
+    print(userName);
+    print(domain);
+    print(password);
+    print(displayName);
+    print(wss);
+
+
+
     UaSettings settings = UaSettings();
     settings.webSocketUrl = wss;
     settings.uri = domain;

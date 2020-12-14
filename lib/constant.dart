@@ -55,20 +55,20 @@ getMq(BuildContext buildContext, pixel){
 const WSS  = "wss://divr.humonics.ai:8089/ws";
 const DOMAIN_ = "@13.127.204.15";
 
-const BASE_URL = "http://c2570ec91c38.ngrok.io";
+const BASE_URL = "http://cfa172485cbb.ngrok.io";
 
-const LOGIN_API = "https://divr.humonics.ai/webrtc/auth/login";
-const FORGOT_PASSWORD_API = "https://divr.humonics.ai/webrtc/auth/forgetPassword";
-const SIGN_UP_API = "https://divr.humonics.ai/webrtc/auth/signup";
-const FETCH_ORG_USER = "https://divr.humonics.ai/webrtc/auth/fetchOrgUser";
-const FILE_UPLOAD  = "https://divr.humonics.ai/webrtc/file/store";
+const LOGIN_API = "https://meet.humonics.ai/auth/login";
+const FORGOT_PASSWORD_API = "https://meet.humonics.ai/auth/forgetPassword";
+const SIGN_UP_API = "https://meet.humonics.ai/auth/signup";
+const FETCH_ORG_USER = "https://meet.humonics.ai/auth/fetchAllUsers";
+const FILE_UPLOAD  = "https://meet.humonics.ai/file/store";
 
-const FETCH_MEETINGS = "https://divr.humonics.ai/calendar/auth/fetchAppointment";
-const ADD_MEETING  = "https://divr.humonics.ai/calendar/auth/addAppointment";
-const REPEAT_MEETING  = "https://divr.humonics.ai/calendar/auth/addAppointmentRepeat";
+const FETCH_MEETINGS = "https://meet.humonics.ai/calendar/auth/fetchAppointment";
+const ADD_MEETING  = "https://meet.humonics.ai/calendar/auth/addAppointment";
+const REPEAT_MEETING  = "https://meet.humonics.ai/calendar/auth/addAppointmentRepeat";
 
-const DELETE_MEETING = "https://divr.humonics.ai/calendar/auth/deleteAppointment";
-const UPDATE_MEETING  = "https://divr.humonics.ai/calendar/auth/updateAppointment";
+const DELETE_MEETING = "https://meet.humonics.ai/calendar/auth/deleteAppointment";
+const UPDATE_MEETING  = "https://meet.humonics.ai/calendar/auth/updateAppointment";
 
 const FETCH_CONTACTS = "$BASE_URL/contacts/fetchContact";
 const ADD_CONTACT = "$BASE_URL/contacts/addContact";

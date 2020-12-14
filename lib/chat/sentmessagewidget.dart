@@ -22,7 +22,9 @@ class SentMessageWidget extends StatelessWidget {
         children: <Widget>[
           Text(chat.createdOn, style: Theme.of(context).textTheme.body2.apply(color: Colors.grey),),
           SizedBox(height: 8),
-          getMsgUI(context)
+          getMsgUI(context),
+          SizedBox(height: 4),
+          getSeenStatusUi(chat.seenStatus)
         ],
       ),
     );
@@ -47,6 +49,22 @@ class SentMessageWidget extends StatelessWidget {
        ),
      );
 
+  }
+
+  getSeenStatusUi(String seenStatus) {
+    print("SeenStatus");
+    print(seenStatus);
+
+    switch(seenStatus){
+        case "0" :
+        return Text("Sent",  style: TextStyle(fontSize: 15, color: Colors.black87));
+        break;
+        case "1" :
+        return Text("Seen",  style: TextStyle(fontSize: 15, color: Colors.black87));
+        break;
+      default :
+        return Text("null", style: TextStyle(fontSize: 15, color: Colors.black87));
+    }
   }
 }
 

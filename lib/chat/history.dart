@@ -92,7 +92,7 @@ class _ChatHistoryPage extends State<ChatHistoryPage> {
                                   fontWeight: FontWeight.normal,
                                   color: getChatColor(chats[i]))),
                           SizedBox(height: 5),
-                          Text(getDayAndTime(chats[i].dateTime.toString()),
+                          Text(chats[i].dateTime.toString(),
                               style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.normal,
@@ -190,15 +190,24 @@ class _ChatHistoryPage extends State<ChatHistoryPage> {
               if (mapChatHistory['data'].isNotEmpty) {
                 var list = mapChatHistory['data'] as List<dynamic>;
                 var chatList = List<ChatHistoryModel>();
+
                 list.forEach((element) {
                   var msgArray = element['msgArray'] as List<dynamic>;
                   print("MSG");
-                  print(msgArray.last.Message);
 
-                //  chatList.add( ChatHistoryModel( "" ,  msgArray[0].toString(),  "", 1, "D", 0));
+                  if(msgArray.isNotEmpty){
+                    chatList.add( ChatHistoryModel( msgArray.last['SentBy'].toString() ,  msgArray.last['Message'].toString(),  "ef", 1, "D", 0) );
+                  }
+
 
                 });
-                updateChatHistoryList(chatList);
+
+                if(chatList.isNotEmpty){
+                  print("chatList");
+                  print(chatList.isNotEmpty);
+                  updateChatHistoryList(chatList);
+                }
+
 
               }else{
 

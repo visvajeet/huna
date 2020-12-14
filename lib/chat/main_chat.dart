@@ -18,7 +18,6 @@ import 'package:huna/utils/show.dart';
 import 'package:huna/utils/utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:random_color/random_color.dart';
-
 import 'chat_model.dart';
 import 'chat_room_model.dart';
 import 'global.dart';
@@ -41,7 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   SIPUAHelper get helper => widget._helper;
 
-  var socketUrl = "http://60826934a68b.ngrok.io";
+  var socketUrl = "http://cfa172485cbb.ngrok.io";
 
   SocketIO mSocket;
 
@@ -57,7 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
 
-     userNameChatToSend = widget.chatRoom.user1;
+     userNameChatToSend = widget.chatRoom.user2;
      connectSocket(widget.chatRoom.roomId);
    // MSG_TARGET = widget.chatHistoryModel.uuid.toString();
 
@@ -99,13 +98,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         fontWeight: FontWeight.normal,
                         color: Colors.white)),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 5),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    widget.chatRoom.user1,
+                    widget.chatRoom.user2.length > 25 ? "${widget.chatRoom.user2.substring(0,25)}" + "..." : widget.chatRoom.user2 ,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                         fontSize: 15,
@@ -145,10 +144,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       padding: const EdgeInsets.only(top: 15,bottom: 80,left: 15,right: 15),
                       itemCount: chats.length,
                       itemBuilder: (ctx, i) {
-                        if (chats[i].from == widget.chatRoom.user1) {
-                          return ReceivedMessagesWidget(chat: chats[i]);
+                        if (chats[i].firstPerson == widget.chatRoom.user1) {
+                          return  SentMessageWidget(chat: chats[i]);
                         } else {
-                          return SentMessageWidget(chat: chats[i]);
+                          return  ReceivedMessagesWidget(chat: chats[i]);
                         }
                       },
                     ),
@@ -277,8 +276,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     );
 
-
-
     addChat(chat);
     saveChat(chat);
     sendMessageSocket(message, widget.chatRoom.roomId, widget.chatRoom.user2, widget.chatRoom.user1);
@@ -334,8 +331,8 @@ class _ChatScreenState extends State<ChatScreen> {
     print("FETCH CHAT API CALL...");
 
     var body = jsonEncode({
-      "firstPerson" : widget.chatRoom.user2,
-      "secondPerson" : widget.chatRoom.user1
+      "firstPerson" : widget.chatRoom.user1,
+      "secondPerson" : widget.chatRoom.user2
     });
 
     final fetchChat = await http.post(FETCH_CHAT,
@@ -408,8 +405,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
      var body = jsonEncode({
 
-       "firstPerson" : chat.secondPerson,
-       "secondPerson" : chat.firstPerson,
+       "firstPerson" : chat.firstPerson,
+       "secondPerson" : chat.secondPerson,
        "message" : chat.message,
        "createdOn" : chat.createdOn,
        "from" : chat.from,
@@ -520,13 +517,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
         socket.on("newMessage", (data) {
           print("New Message Received :) ");
-
-         /* var data = ({
-            "message": message,
-            "room": roomId,
-            "from": fromEmail,
-            "to":toEmail,
-          });*/
 
           var chat = ChatMessages(
             message: data["message"],

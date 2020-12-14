@@ -159,15 +159,13 @@ class _ContactsPage extends State<ContactsPage> {
               ));
         }
         position -= 1;
-        return Card(
+        return  Card(
           color: Colors.white,
           elevation: 0.5,
-
           child: Container(
             key: PageStorageKey('myScrollable'),
             child: ExpansionTile(
               initiallyExpanded: false,
-
               trailing: Icon(
                 Icons.face,
                 size: 0.0,
@@ -179,17 +177,17 @@ class _ContactsPage extends State<ContactsPage> {
                     child: InkWell(
                       onTap: () {navigateToContactInfoPage(contactsList[position]);},
                       child: CircleAvatar(
-                        radius: 22,
+                          radius: 22,
                           backgroundImage:
                           NetworkImage(this.contactsList[position].profilePic),
-                        backgroundColor:
-                            Color(int.parse(this.contactsList[position].color)),
-                        child: this.contactsList[position].profilePic.isNotEmpty ? Container() : Text(
-                          getFirstLetter(this.contactsList[position].name),
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.white))
+                          backgroundColor:
+                          Color(int.parse(this.contactsList[position].color)),
+                          child: this.contactsList[position].profilePic.isNotEmpty ? Container() : Text(
+                              getFirstLetter(this.contactsList[position].name),
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white))
                       ),
                     ),
                   ),
@@ -212,7 +210,19 @@ class _ContactsPage extends State<ContactsPage> {
                         height: 5,
                       )
                     ],
-                  )
+                  ),
+                  new Spacer(), // For place the view end of the row
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
+                    child: InkWell(
+                      onTap: () {navigateToContactInfoPage(contactsList[position]);},
+                      child: CircleAvatar(
+                        radius: 8,
+                        backgroundColor:
+                        Colors.green[500],
+                      ),
+                    ),
+                  ),
                 ],
               ),
               children: <Widget>[
@@ -266,7 +276,7 @@ class _ContactsPage extends State<ContactsPage> {
               ],
             ),
           ),
-        );
+        );;
       },
     );
   }
